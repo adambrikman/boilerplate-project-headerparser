@@ -18,15 +18,22 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-
-
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
+});
+
+// Request Header Parser Microservice
+app.get('/api/whoami', function(req, res) {
+  // Code snippet to get IP address: https://www.quora.com/How-do-I-get-a-users-IP-address-in-Node-js-like-you-do-in-PHP
+  // Documentation for x-forwarded-for: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+  res.send({ipaddress: ((req.headers['x-forwarded-for'] || '').split(',')[0] || req.connection.remoteAddress),
+            // Code snippet for language: https://stackoverflow.com/questions/11845471/how-can-i-get-the-browser-language-in-node-js-express-js
+           language: req.headers["accept-language"],
+           software: req.headers["user-agent"] });
 });
